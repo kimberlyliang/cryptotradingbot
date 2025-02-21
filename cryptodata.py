@@ -104,12 +104,17 @@ print(df['max_price'])
 # Check for NaN values in max_price
 if df['max_price'].isnull().all():
     print("Error: 'max_price' column contains only NaN values.")
+    T_p = None  # Set T_p to None if max_price is all NaN
 else:
     # Find maximum price timestamp (T_p)
     T_p = df.loc[df['max_price'].idxmax(), 'date']
 
-# Compute ΔT_o = T_p - T_s
-df['ΔT_o'] = (T_p - T_s).days
+# Check if T_p is defined before using it
+if T_p is not None and 'cumulative_sentiment' in df.columns:
+    # Compute ΔT_o = T_p - T_s
+    df['ΔT_o'] = (T_p - T_s).days
+else:
+    print("Error: T_p is not defined or cumulative_sentiment column is missing.")
 
 # Compute entry condition γ using cumulative probability
 df['cumulative_probability'] = df['cumulative_sentiment'].cumsum() / df['cumulative_sentiment'].sum()
