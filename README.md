@@ -57,8 +57,7 @@ This strategy incorporates market data and social sentiment analysis by tracking
 
 ### 🔹 Prerequisites  
 - AWS CLI installed  
-- Python 3.x  
-- Required dependencies (to be listed in `requirements.txt`)  
+- Python 3.x 
 
 ### 🛠 Setup  
 
