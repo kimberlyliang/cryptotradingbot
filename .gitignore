@@ -1,0 +1,5 @@
+# Ignore local-directory
+local-directory/
+
+# Ignore Git directory
+.git/
