@@ -67,13 +67,7 @@ This strategy incorporates market data and social sentiment analysis by tracking
    git clone https://github.com/your-repo-name.git  
    cd your-repo-name  
    ```  
-
-2. **Install dependencies:**  
-   ```bash  
-   pip install -r requirements.txt  
-   ```  
-
-3. **Download the dataset:**  
+2. **Download the dataset:**  
    ```bash  
    aws s3 sync s3://user-tweets-991943d5bae2b44ccfb0a711279c8720/ ./local-directory/ --no-sign-request  
    ```  
