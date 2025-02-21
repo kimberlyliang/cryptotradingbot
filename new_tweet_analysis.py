@@ -11,52 +11,52 @@ json_files = [
     "BloombergAsia.json",
     "BoredApeYC.json",
     "MarioNawfal.json",
-    "CNBC.json",
+    "CNBC.json"
     "CoinDesk.json",
     "BBCWorld.json",
     "DecryptMedia.json",
     "BBCNews.json",
     "ArweaveEco.json",
-    "Aptos.json",
-    "CurveCap.json",
-    "Consensys.json",
+    # "Aptos.json",
+    # "CurveCap.json",
+    # "Consensys.json",
     "MarketWatch.json",
-    "DeGodsNFT.json",
-    "Azuki.json",
-    "Meter_IO.json",
-    "Cardano.json",
-    "IvanOnTech.json",
+    # "DeGodsNFT.json",
+    # "Azuki.json",
+    # "Meter_IO.json",
+    # "Cardano.json",
+    # "IvanOnTech.json",
     "Bancor.json",
     "GordonGoner.json",
-    "MetaMaskSupport.json",
-    "BBCBreaking.json",
-    "FT.json",
-    "BrendanPedersen.json",
-    "0xMarcB.json",
-    "CharlotteFang77.json",
-    "ABC.json",
+    # "MetaMaskSupport.json",
+    # "BBCBreaking.json",
+    # "FT.json",
+    # "BrendanPedersen.json",
+    # "0xMarcB.json",
+    # "CharlotteFang77.json",
+    # "ABC.json",
     "BillAckman.json",
-    "GnosisDAO.json",
-    "MinaProtocol.json",
-    "CryptoGarga.json",
-    "2dcapital1.json",
-    "AxieInfinity.json",
-    "MihailoBjelic.json",
-    "AptosLabs.json",
-    "DLNewsInfo.json",
-    "0xPolygonEco.json",
-    "BitcoinMagazine.json",
-    "AcalaNetwork.json",
-    "Celo.json",
-    "Neo_Blockchain.json",
-    "Dune.json",
-    "ETHGlobal.json",
-    "0xPolygonDeFi.json",
+    # "GnosisDAO.json",
+    # "MinaProtocol.json",
+    # "CryptoGarga.json",
+    # "2dcapital1.json",
+    # "AxieInfinity.json",
+    # "MihailoBjelic.json",
+    # "AptosLabs.json",
+    # "DLNewsInfo.json",
+    # "0xPolygonEco.json",
+    # "BitcoinMagazine.json",
+    # "AcalaNetwork.json",
+    # "Celo.json",
+    # "Neo_Blockchain.json",
+    # "Dune.json",
+    # "ETHGlobal.json",
+    # "0xPolygonDeFi.json",
     "CathieDWood.json",
-    "ABCWorldNews.json",
-    "BackTheBunny.json",
-    "MantaNetwork.json",
-    "Fxhedgers.json"
+    # "ABCWorldNews.json",
+    # "BackTheBunny.json",
+    # "MantaNetwork.json",
+    # "Fxhedgers.json"
 ]
 
 # Directory containing the JSON files
@@ -64,7 +64,8 @@ directory_path = "/Users/kimberly/Documents/Coding_projects/cryptotradingbot/loc
 
 # Create a DataFrame to hold the tweets
 start_date = datetime(2024, 3, 1)
-time_range = pd.date_range(start=start_date, periods=24, freq='H')  # Use 'h' instead of 'H'
+end_date = datetime(2025, 2, 19)
+time_range = pd.date_range(start=start_date, end=end_date, freq='h')  # Create hourly range
 df = pd.DataFrame(index=time_range)
 
 # Set to hold valid tweet times for quick lookup
@@ -74,7 +75,7 @@ if run:
     # Iterate over each specified file
     for filename in json_files:
         file_path = os.path.join(directory_path, filename)
-        print(f"Processing file: {filename}")  # Debugging line
+        print(f"Processing file: {filename}")
 
         # Load the JSON data from the file
         try:
@@ -104,15 +105,20 @@ if run:
                             full_text = legacy.get('full_text', '')
                             created_at = legacy.get('created_at', '')
 
-                            # Convert created_at to a datetime object
+                            # Convert created_at to a timezone-aware datetime object
                             tweet_time = pd.to_datetime(created_at)
+
+                            # Remove timezone information to make it naive
+                            tweet_time = tweet_time.tz_localize(None)
 
                             # Debugging: Print the tweet time and full text
                             print(f"Tweet time: {tweet_time}, Full text: {full_text}")
 
-                            # Check if the tweet time is valid
-                            if tweet_time in valid_times:
-                                tweet_texts[tweet_time].append(full_text)  # Collect tweet texts
+                            # Check if the tweet time is within the valid times
+                            for valid_time in valid_times:
+                                if valid_time <= tweet_time < valid_time + pd.Timedelta(hours=1):
+                                    tweet_texts[valid_time].append(full_text)  # Collect tweet texts
+                                    break  # Exit the loop once a match is found
                             else:
                                 print(f"Tweet time {tweet_time} not in valid times.")  # Debugging line
             except Exception as e:
